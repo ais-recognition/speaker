@@ -13,6 +13,13 @@
 		BA0CC8491AA6D1DA000910E2 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0CC8481AA6D1DA000910E2 /* Chat.swift */; };
 		BA0CC84B1AA6D1F8000910E2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0CC84A1AA6D1F8000910E2 /* User.swift */; };
 		BA0CC84D1AA6D20E000910E2 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0CC84C1AA6D20E000910E2 /* Message.swift */; };
+		BA0CC85B1AA6E008000910E2 /* CocoaMQTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0CC8541AA6E008000910E2 /* CocoaMQTT.swift */; };
+		BA0CC85C1AA6E008000910E2 /* CocoaMQTTFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0CC8551AA6E008000910E2 /* CocoaMQTTFrame.swift */; };
+		BA0CC85D1AA6E008000910E2 /* CocoaMQTTMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0CC8561AA6E008000910E2 /* CocoaMQTTMessage.swift */; };
+		BA0CC85E1AA6E008000910E2 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = BA0CC8581AA6E008000910E2 /* GCDAsyncSocket.m */; };
+		BA0CC85F1AA6E008000910E2 /* MSWeakTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = BA0CC85A1AA6E008000910E2 /* MSWeakTimer.m */; };
+		BA0CC86D1AA6E864000910E2 /* MessageIncoming.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BA0CC86B1AA6E864000910E2 /* MessageIncoming.aiff */; };
+		BA0CC86E1AA6E864000910E2 /* MessageOutgoing.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BA0CC86C1AA6E864000910E2 /* MessageOutgoing.aiff */; };
 		BAAE599D1A9EE66300CAE080 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAE599C1A9EE66300CAE080 /* AppDelegate.swift */; };
 		BAAE59A41A9EE66300CAE080 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BAAE59A21A9EE66300CAE080 /* Main.storyboard */; };
 		BAAE59A61A9EE66300CAE080 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAAE59A51A9EE66300CAE080 /* Images.xcassets */; };
@@ -37,6 +44,17 @@
 		BA0CC8481AA6D1DA000910E2 /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		BA0CC84A1AA6D1F8000910E2 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		BA0CC84C1AA6D20E000910E2 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		BA0CC8541AA6E008000910E2 /* CocoaMQTT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMQTT.swift; sourceTree = "<group>"; };
+		BA0CC8551AA6E008000910E2 /* CocoaMQTTFrame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMQTTFrame.swift; sourceTree = "<group>"; };
+		BA0CC8561AA6E008000910E2 /* CocoaMQTTMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMQTTMessage.swift; sourceTree = "<group>"; };
+		BA0CC8571AA6E008000910E2 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		BA0CC8581AA6E008000910E2 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		BA0CC8591AA6E008000910E2 /* MSWeakTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSWeakTimer.h; sourceTree = "<group>"; };
+		BA0CC85A1AA6E008000910E2 /* MSWeakTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSWeakTimer.m; sourceTree = "<group>"; };
+		BA0CC8691AA6E180000910E2 /* SpeakerClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SpeakerClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		BA0CC86A1AA6E7BC000910E2 /* SwiftMQTT.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftMQTT.h; sourceTree = "<group>"; };
+		BA0CC86B1AA6E864000910E2 /* MessageIncoming.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = MessageIncoming.aiff; sourceTree = "<group>"; };
+		BA0CC86C1AA6E864000910E2 /* MessageOutgoing.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = MessageOutgoing.aiff; sourceTree = "<group>"; };
 		BAAE59971A9EE66300CAE080 /* SpeakerClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpeakerClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAAE599B1A9EE66300CAE080 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BAAE599C1A9EE66300CAE080 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -93,9 +111,25 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
+		BA0CC8531AA6E008000910E2 /* SwiftMQTT */ = {
+			isa = PBXGroup;
+			children = (
+				BA0CC8541AA6E008000910E2 /* CocoaMQTT.swift */,
+				BA0CC8551AA6E008000910E2 /* CocoaMQTTFrame.swift */,
+				BA0CC8561AA6E008000910E2 /* CocoaMQTTMessage.swift */,
+				BA0CC8571AA6E008000910E2 /* GCDAsyncSocket.h */,
+				BA0CC8581AA6E008000910E2 /* GCDAsyncSocket.m */,
+				BA0CC8591AA6E008000910E2 /* MSWeakTimer.h */,
+				BA0CC85A1AA6E008000910E2 /* MSWeakTimer.m */,
+				BA0CC86A1AA6E7BC000910E2 /* SwiftMQTT.h */,
+			);
+			path = SwiftMQTT;
+			sourceTree = "<group>";
+		};
 		BAAE598E1A9EE66300CAE080 = {
 			isa = PBXGroup;
 			children = (
+				BA0CC8531AA6E008000910E2 /* SwiftMQTT */,
 				BAAE59991A9EE66300CAE080 /* SpeakerClient */,
 				BAAE59B11A9EE66300CAE080 /* SpeakerClientTests */,
 				BAAE59981A9EE66300CAE080 /* Products */,
@@ -119,6 +153,7 @@
 				BA0CC8501AA6D487000910E2 /* Controller */,
 				BAAE59A21A9EE66300CAE080 /* Main.storyboard */,
 				BAAE599C1A9EE66300CAE080 /* AppDelegate.swift */,
+				BA0CC8691AA6E180000910E2 /* SpeakerClient-Bridging-Header.h */,
 				BAAE59A51A9EE66300CAE080 /* Images.xcassets */,
 				BAAE59A71A9EE66300CAE080 /* LaunchScreen.xib */,
 				BAAE599A1A9EE66300CAE080 /* Supporting Files */,
@@ -129,6 +164,8 @@
 		BAAE599A1A9EE66300CAE080 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BA0CC86B1AA6E864000910E2 /* MessageIncoming.aiff */,
+				BA0CC86C1AA6E864000910E2 /* MessageOutgoing.aiff */,
 				BAAE599B1A9EE66300CAE080 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -232,7 +269,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				BAAE59A41A9EE66300CAE080 /* Main.storyboard in Resources */,
+				BA0CC86D1AA6E864000910E2 /* MessageIncoming.aiff in Resources */,
 				BAAE59A91A9EE66300CAE080 /* LaunchScreen.xib in Resources */,
+				BA0CC86E1AA6E864000910E2 /* MessageOutgoing.aiff in Resources */,
 				BAAE59A61A9EE66300CAE080 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -252,12 +291,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA0CC8471AA6D1A7000910E2 /* MessageSentDateCell.swift in Sources */,
+				BA0CC85F1AA6E008000910E2 /* MSWeakTimer.m in Sources */,
 				BA0CC8491AA6D1DA000910E2 /* Chat.swift in Sources */,
 				BA0CC84D1AA6D20E000910E2 /* Message.swift in Sources */,
 				BAAE599D1A9EE66300CAE080 /* AppDelegate.swift in Sources */,
 				BA0CC84B1AA6D1F8000910E2 /* User.swift in Sources */,
+				BA0CC85D1AA6E008000910E2 /* CocoaMQTTMessage.swift in Sources */,
+				BA0CC85B1AA6E008000910E2 /* CocoaMQTT.swift in Sources */,
 				BA0CC8451AA6D1A7000910E2 /* ChatViewController.swift in Sources */,
 				BA0CC8461AA6D1A7000910E2 /* MessageBubbleCell.swift in Sources */,
+				BA0CC85E1AA6E008000910E2 /* GCDAsyncSocket.m in Sources */,
+				BA0CC85C1AA6E008000910E2 /* CocoaMQTTFrame.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,6 +431,7 @@
 				INFOPLIST_FILE = SpeakerClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = SpeakerClient;
+				SWIFT_OBJC_BRIDGING_HEADER = "SpeakerClient/SpeakerClient-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -397,6 +442,7 @@
 				INFOPLIST_FILE = SpeakerClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = SpeakerClient;
+				SWIFT_OBJC_BRIDGING_HEADER = "SpeakerClient/SpeakerClient-Bridging-Header.h";
 			};
 			name = Release;
 		};
