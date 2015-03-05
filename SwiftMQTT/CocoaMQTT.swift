@@ -194,7 +194,7 @@ class CocoaMQTT: NSObject, CocoaMQTTClient, GCDAsyncSocketDelegate, CocoaMQTTRea
     //API Functions
     
     func connect() -> Bool {
-        socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
+        socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_global_queue(QOS_CLASS_UTILITY, 0))
         reader = CocoaMQTTReader(socket: socket!, delegate: self)
         var err: NSError?
         if !socket!.connectToHost(self.host, onPort: self.port, error: &err) {
@@ -307,7 +307,7 @@ class CocoaMQTT: NSObject, CocoaMQTTClient, GCDAsyncSocketDelegate, CocoaMQTTRea
                 selector: "_aliveTimerFired",
                 userInfo: nil,
                 repeats: true,
-                dispatchQueue: dispatch_get_main_queue())
+                dispatchQueue: dispatch_get_global_queue(QOS_CLASS_UTILITY, 0))
         }
         let ack = CocoaMQTTConnAck(rawValue: connack)!
         delegate?.mqtt(self, didConnectAck: ack)

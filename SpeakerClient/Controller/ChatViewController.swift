@@ -14,13 +14,14 @@ let toolBarMinHeight: CGFloat = 44
 let textViewMaxHeight: (portrait: CGFloat, landscape: CGFloat) = (portrait: 272, landscape: 90)
 let messageSoundOutgoing: SystemSoundID = createMessageSoundOutgoing()
 
-class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextViewDelegate {
+class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, CocoaMQTTDelegate {
     let chat: Chat
     var tableView: UITableView!
     var toolBar: UIToolbar!
     var textView: UITextView!
     var sendButton: UIButton!
     var rotating = false
+    let mqtt = MQTTClient(clientId: "ios")
 
     override var inputAccessoryView: UIView! {
     get {
@@ -83,6 +84,16 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        mqtt.messageHandler = {(message: MQTTMessage!) -> Void in
+            println(message.payloadString())
+        }
+        
+        mqtt.connectToHost("127.0.0.1", completionHandler: {(code: MQTTConnectionReturnCode) -> Void in
+            println(code)
+            if code.value  == 0 {
+                self.mqtt.subscribe("aaaa", withCompletionHandler: nil)
+            }
+        })
 
         chat.loadedMessages = [
             [
@@ -325,6 +336,54 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
             tableView.deselectRowAtIndexPath(selectedIndexPath, animated: false)
         }
         (notification.object as! UIMenuController).menuItems = nil
+    }
+    
+    // MQTT delegates
+    
+    func mqtt(mqtt: CocoaMQTT, didConnect host: String, port: Int) {
+        println("didConnect \(host):\(port)")
+    }
+    
+    func mqtt(mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
+        println("didConnectAck \(ack.rawValue)")
+        mqtt.publish("/c/d/e", withString: "hahah")
+        mqtt.subscribe("/a/b/c", qos: CocoaMQTTQOS.QOS1)
+        mqtt.ping()
+    }
+    
+    func mqtt(mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {
+        println("didPublishMessage to \(message.topic))")
+    }
+    
+    func mqtt(mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
+        println("didReceivedMessage with id \(id)")
+        println("message.topic: \(message.topic)")
+        println("message.payload: \(message.string)")
+    }
+    
+    func mqtt(mqtt: CocoaMQTT, didSubscribeTopic topic: String) {
+        println("didSubscribeTopic to \(topic)")
+        //mqtt.unsubscribe(topic)
+    }
+    
+    func mqtt(mqtt: CocoaMQTT, didUnsubscribeTopic topic: String) {
+        println("didUnsubscribeTopic to \(topic)")
+    }
+    
+    func mqttDidPing(mqtt: CocoaMQTT) {
+        println("didPing")
+    }
+    
+    func mqttDidReceivePong(mqtt: CocoaMQTT) {
+        _console("didReceivePong")
+    }
+    
+    func mqttDidDisconnect(mqtt: CocoaMQTT, withError err: NSError) {
+        _console("mqttDidDisconnect")
+    }
+    
+    func _console(info: String) {
+        println("Delegate: \(info)")
     }
 }
 
