@@ -8,7 +8,6 @@
 
 #ifndef SpeakerClient_SwiftMQTT_h
 #define SpeakerClient_SwiftMQTT_h
-    #import <Foundation/Foundation.h>
     #import "MQTTKit/MQTTKit.h"
 
 #endif
