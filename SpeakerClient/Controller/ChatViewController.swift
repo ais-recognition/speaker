@@ -28,7 +28,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if toolBar == nil {
             toolBar = UIToolbar(frame: CGRectMake(0, 0, 0, toolBarMinHeight-0.5))
 
-            textView = InputTextView(frame: CGRectZero)
+            textView = UITextView(frame: CGRectZero)
             textView.backgroundColor = UIColor(white: 250/255, alpha: 1)
             textView.delegate = self
             textView.font = UIFont.systemFontOfSize(messageFontSize)
@@ -126,7 +126,6 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         notificationCenter.addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
-        notificationCenter.addObserver(self, selector: "menuControllerWillHide:", name: UIMenuControllerWillHideMenuNotification, object: nil) // #CopyMessage
 
         // tableViewScrollToBottomAnimated(false) // doesn't work
     }
@@ -195,13 +194,6 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
             var cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as!MessageBubbleCell!
             if cell == nil {
                 cell = MessageBubbleCell(style: .Default, reuseIdentifier: cellIdentifier)
-
-                // Add gesture recognizers #CopyMessage
-                let action: Selector = "messageShowMenuAction:"
-                let doubleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: action)
-                doubleTapGestureRecognizer.numberOfTapsRequired = 2
-                cell.bubbleImageView.addGestureRecognizer(doubleTapGestureRecognizer)
-                cell.bubbleImageView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: action))
             }
             let message = chat.loadedMessages[indexPath.section][indexPath.row-1]
             cell.configureWithMessage(message)
@@ -301,43 +293,14 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     func tableViewScrollToBottomAnimated(animated: Bool) {
-        let numberOfRows = tableView.numberOfRowsInSection(0)
+        let numberOfSections = tableView.numberOfSections()
+        let numberOfRows = tableView.numberOfRowsInSection(numberOfSections - 1)
+        
         if numberOfRows > 0 {
-            tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: numberOfRows-1, inSection: 0), atScrollPosition: .Bottom, animated: animated)
+            let indexPath = NSIndexPath(forRow: numberOfRows - 1, inSection: numberOfSections - 1)
+            tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: animated)
         }
     }
-
-    // Handle actions #CopyMessage
-    // 1. Select row and show "Copy" menu
-    func messageShowMenuAction(gestureRecognizer: UITapGestureRecognizer) {
-        let twoTaps = (gestureRecognizer.numberOfTapsRequired == 2)
-        let doubleTap = (twoTaps && gestureRecognizer.state == .Ended)
-        let longPress = (!twoTaps && gestureRecognizer.state == .Began)
-        if doubleTap || longPress {
-            let pressedIndexPath = tableView.indexPathForRowAtPoint(gestureRecognizer.locationInView(tableView))!
-            tableView.selectRowAtIndexPath(pressedIndexPath, animated: false, scrollPosition: .None)
-
-            let menuController = UIMenuController.sharedMenuController()
-            let bubbleImageView = gestureRecognizer.view!
-            menuController.setTargetRect(bubbleImageView.frame, inView: bubbleImageView.superview!)
-            menuController.menuItems = [UIMenuItem(title: "Copy", action: "messageCopyTextAction:")]
-            menuController.setMenuVisible(true, animated: true)
-        }
-    }
-    // 2. Copy text to pasteboard
-    func messageCopyTextAction(menuController: UIMenuController) {
-        let selectedIndexPath = tableView.indexPathForSelectedRow()
-        let selectedMessage = chat.loadedMessages[selectedIndexPath!.section][selectedIndexPath!.row-1]
-        UIPasteboard.generalPasteboard().string = selectedMessage.text
-    }
-    // 3. Deselect row
-    func menuControllerWillHide(notification: NSNotification) {
-        if let selectedIndexPath = tableView.indexPathForSelectedRow() {
-            tableView.deselectRowAtIndexPath(selectedIndexPath, animated: false)
-        }
-        (notification.object as! UIMenuController).menuItems = nil
-    }
-    
 }
 
 func createMessageSoundOutgoing() -> SystemSoundID {
@@ -347,18 +310,3 @@ func createMessageSoundOutgoing() -> SystemSoundID {
     return soundID
 }
 
-// Only show "Copy" when editing `textView` #CopyMessage
-class InputTextView: UITextView {
-    override func canPerformAction(action: Selector, withSender sender: AnyObject!) -> Bool {
-        if (delegate as! ChatViewController).tableView.indexPathForSelectedRow() != nil {
-            return action == "messageCopyTextAction:"
-        } else {
-            return super.canPerformAction(action, withSender: sender)
-        }
-    }
-
-    // More specific than implementing `nextResponder` to return `delegate`, which might cause side effects?
-    func messageCopyTextAction(menuController: UIMenuController) {
-        (delegate as! ChatViewController).messageCopyTextAction(menuController)
-    }
-}
