@@ -31,6 +31,7 @@
 		BA439D701AB2D28000ADF45B /* util_mosq.c in Sources */ = {isa = PBXBuildFile; fileRef = BA439D5C1AB2D28000ADF45B /* util_mosq.c */; };
 		BA439D711AB2D28000ADF45B /* will_mosq.c in Sources */ = {isa = PBXBuildFile; fileRef = BA439D5E1AB2D28000ADF45B /* will_mosq.c */; };
 		BA439D721AB2D28000ADF45B /* MQTTKit.m in Sources */ = {isa = PBXBuildFile; fileRef = BA439D621AB2D28000ADF45B /* MQTTKit.m */; };
+		BA439D741AB3AC2300ADF45B /* MessageInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA439D731AB3AC2300ADF45B /* MessageInputAccessoryView.swift */; };
 		BAAE599D1A9EE66300CAE080 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAE599C1A9EE66300CAE080 /* AppDelegate.swift */; };
 		BAAE59A41A9EE66300CAE080 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BAAE59A21A9EE66300CAE080 /* Main.storyboard */; };
 		BAAE59A61A9EE66300CAE080 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAAE59A51A9EE66300CAE080 /* Images.xcassets */; };
@@ -94,6 +95,7 @@
 		BA439D5F1AB2D28000ADF45B /* will_mosq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = will_mosq.h; sourceTree = "<group>"; };
 		BA439D611AB2D28000ADF45B /* MQTTKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTKit.h; sourceTree = "<group>"; };
 		BA439D621AB2D28000ADF45B /* MQTTKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTTKit.m; sourceTree = "<group>"; };
+		BA439D731AB3AC2300ADF45B /* MessageInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageInputAccessoryView.swift; sourceTree = "<group>"; };
 		BAAE59971A9EE66300CAE080 /* SpeakerClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpeakerClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAAE599B1A9EE66300CAE080 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BAAE599C1A9EE66300CAE080 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 			children = (
 				BA0CC8441AA6D1A7000910E2 /* MessageSentDateCell.swift */,
 				BA0CC8431AA6D1A7000910E2 /* MessageBubbleCell.swift */,
+				BA439D731AB3AC2300ADF45B /* MessageInputAccessoryView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -395,6 +398,7 @@
 				BA439D6C1AB2D28000ADF45B /* send_mosq.c in Sources */,
 				BA439D691AB2D28000ADF45B /* read_handle_client.c in Sources */,
 				BA0CC8451AA6D1A7000910E2 /* ChatViewController.swift in Sources */,
+				BA439D741AB3AC2300ADF45B /* MessageInputAccessoryView.swift in Sources */,
 				BA439D711AB2D28000ADF45B /* will_mosq.c in Sources */,
 				BA439D6B1AB2D28000ADF45B /* send_client_mosq.c in Sources */,
 				BA0CC8461AA6D1A7000910E2 /* MessageBubbleCell.swift in Sources */,

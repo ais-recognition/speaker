@@ -17,51 +17,55 @@ let messageSoundOutgoing: SystemSoundID = createMessageSoundOutgoing()
 class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextViewDelegate {
     let chat: Chat
     var tableView: UITableView!
-    var toolBar: UIToolbar!
+    var toolBar: MessageInputAccessoryView!
     var textView: UITextView!
     var sendButton: UIButton!
     var rotating = false
     let mqtt = MQTTClient(clientId: "ios")
 
     override var inputAccessoryView: UIView! {
-    get {
         if toolBar == nil {
-            toolBar = UIToolbar(frame: CGRectMake(0, 0, 0, toolBarMinHeight-0.5))
-
-            textView = UITextView(frame: CGRectZero)
-            textView.backgroundColor = UIColor(white: 250/255, alpha: 1)
-            textView.delegate = self
-            textView.font = UIFont.systemFontOfSize(messageFontSize)
-            textView.layer.borderColor = UIColor(red: 200/255, green: 200/255, blue: 205/255, alpha:1).CGColor
-            textView.layer.borderWidth = 0.5
-            textView.layer.cornerRadius = 5
-//        textView.placeholder = "Message"
-            textView.scrollsToTop = false
-            textView.textContainerInset = UIEdgeInsetsMake(4, 3, 3, 3)
-            toolBar.addSubview(textView)
-
-            sendButton = UIButton.buttonWithType(.System) as! UIButton
-            sendButton.enabled = false
-            sendButton.titleLabel?.font = UIFont.boldSystemFontOfSize(17)
-            sendButton.setTitle("Send", forState: .Normal)
-            sendButton.setTitleColor(UIColor(red: 142/255, green: 142/255, blue: 147/255, alpha: 1), forState: .Disabled)
-            sendButton.setTitleColor(UIColor(red: 1/255, green: 122/255, blue: 255/255, alpha: 1), forState: .Normal)
-            sendButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
-            sendButton.addTarget(self, action: "sendAction", forControlEvents: UIControlEvents.TouchUpInside)
-            toolBar.addSubview(sendButton)
-
-            // Auto Layout allows `sendButton` to change width, e.g., for localization.
-            textView.setTranslatesAutoresizingMaskIntoConstraints(false)
-            sendButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-            toolBar.addConstraint(NSLayoutConstraint(item: textView, attribute: .Left, relatedBy: .Equal, toItem: toolBar, attribute: .Left, multiplier: 1, constant: 8))
-            toolBar.addConstraint(NSLayoutConstraint(item: textView, attribute: .Top, relatedBy: .Equal, toItem: toolBar, attribute: .Top, multiplier: 1, constant: 7.5))
-            toolBar.addConstraint(NSLayoutConstraint(item: textView, attribute: .Right, relatedBy: .Equal, toItem: sendButton, attribute: .Left, multiplier: 1, constant: -2))
-            toolBar.addConstraint(NSLayoutConstraint(item: textView, attribute: .Bottom, relatedBy: .Equal, toItem: toolBar, attribute: .Bottom, multiplier: 1, constant: -8))
-            toolBar.addConstraint(NSLayoutConstraint(item: sendButton, attribute: .Right, relatedBy: .Equal, toItem: toolBar, attribute: .Right, multiplier: 1, constant: 0))
-            toolBar.addConstraint(NSLayoutConstraint(item: sendButton, attribute: .Bottom, relatedBy: .Equal, toItem: toolBar, attribute: .Bottom, multiplier: 1, constant: -4.5))
+            toolBar = MessageInputAccessoryView(frame: CGRectMake(0, 0, 0, toolBarMinHeight-0.5))
         }
         return toolBar
-    }
+//    get {
+//        if toolBar == nil {
+//            toolBar = UIToolbar(frame: CGRectMake(0, 0, 0, toolBarMinHeight-0.5))
+//
+//            textView = UITextView(frame: CGRectZero)
+//            textView.backgroundColor = UIColor(white: 250/255, alpha: 1)
+//            textView.delegate = self
+//            textView.font = UIFont.systemFontOfSize(messageFontSize)
+//            textView.layer.borderColor = UIColor(red: 200/255, green: 200/255, blue: 205/255, alpha:1).CGColor
+//            textView.layer.borderWidth = 0.5
+//            textView.layer.cornerRadius = 5
+////        textView.placeholder = "Message"
+//            textView.scrollsToTop = false
+//            textView.textContainerInset = UIEdgeInsetsMake(4, 3, 3, 3)
+//            toolBar.addSubview(textView)
+//
+//            sendButton = UIButton.buttonWithType(.System) as! UIButton
+//            sendButton.enabled = false
+//            sendButton.titleLabel?.font = UIFont.boldSystemFontOfSize(17)
+//            sendButton.setTitle("Send", forState: .Normal)
+//            sendButton.setTitleColor(UIColor(red: 142/255, green: 142/255, blue: 147/255, alpha: 1), forState: .Disabled)
+//            sendButton.setTitleColor(UIColor(red: 1/255, green: 122/255, blue: 255/255, alpha: 1), forState: .Normal)
+//            sendButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
+//            sendButton.addTarget(self, action: "sendAction", forControlEvents: UIControlEvents.TouchUpInside)
+//            toolBar.addSubview(sendButton)
+//
+//            // Auto Layout allows `sendButton` to change width, e.g., for localization.
+//            textView.setTranslatesAutoresizingMaskIntoConstraints(false)
+//            sendButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+//            toolBar.addConstraint(NSLayoutConstraint(item: textView, attribute: .Left, relatedBy: .Equal, toItem: toolBar, attribute: .Left, multiplier: 1, constant: 8))
+//            toolBar.addConstraint(NSLayoutConstraint(item: textView, attribute: .Top, relatedBy: .Equal, toItem: toolBar, attribute: .Top, multiplier: 1, constant: 7.5))
+//            toolBar.addConstraint(NSLayoutConstraint(item: textView, attribute: .Right, relatedBy: .Equal, toItem: sendButton, attribute: .Left, multiplier: 1, constant: -2))
+//            toolBar.addConstraint(NSLayoutConstraint(item: textView, attribute: .Bottom, relatedBy: .Equal, toItem: toolBar, attribute: .Bottom, multiplier: 1, constant: -8))
+//            toolBar.addConstraint(NSLayoutConstraint(item: sendButton, attribute: .Right, relatedBy: .Equal, toItem: toolBar, attribute: .Right, multiplier: 1, constant: 0))
+//            toolBar.addConstraint(NSLayoutConstraint(item: sendButton, attribute: .Bottom, relatedBy: .Equal, toItem: toolBar, attribute: .Bottom, multiplier: 1, constant: -4.5))
+//        }
+//        return toolBar
+//    }
     }
 
     init(chat: Chat) {
@@ -95,17 +99,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
             }
         })
 
-        chat.loadedMessages = [
-            [
-                Message(incoming: true, text: "I really enjoyed programming with you! :-)", sentDate: NSDate(timeIntervalSinceNow: -60*60*24*2-60*60)),
-                Message(incoming: false, text: "Thanks! Me too! :-)", sentDate: NSDate(timeIntervalSinceNow: -60*60*24*2))
-            ],
-            [
-                Message(incoming: true, text: "Hey, would you like to spend some time together tonight and work on Acani?", sentDate: NSDate(timeIntervalSinceNow: -33)),
-                Message(incoming: false, text: "Sure, I'd love to. How's 6 PM?", sentDate: NSDate(timeIntervalSinceNow: -19)),
-                Message(incoming: true, text: "6 sounds good :-)", sentDate: NSDate())
-            ]
-        ]
+        chat.loadedMessages = []
 
         let whiteColor = UIColor.whiteColor()
         view.backgroundColor = whiteColor // smooths push animation
@@ -141,18 +135,21 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     override func viewWillDisappear(animated: Bool)  {
         super.viewWillDisappear(animated)
-        chat.draft = textView.text
+        chat.draft = toolBar.textView.text
+//        chat.draft = textView.text
     }
 
     // This gets called a lot. Perhaps there's a better way to know when `view.window` has been set?
     override func viewDidLayoutSubviews()  {
         super.viewDidLayoutSubviews()
+//        toolBar.textView.becomeFirstResponder()
 
         if !chat.draft.isEmpty {
-            textView.text = chat.draft
+            toolBar.textView.text = chat.draft
+//            textView.text = chat.draft
             chat.draft = ""
-            textViewDidChange(textView)
-            textView.becomeFirstResponder()
+            textViewDidChange(toolBar.textView)
+            toolBar.textView.becomeFirstResponder()
         }
     }
 
@@ -208,7 +205,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     func textViewDidChange(textView: UITextView) {
         updateTextViewHeight()
-        sendButton.enabled = textView.hasText()
+        toolBar.sendButton.enabled = toolBar.textView.hasText()
     }
 
     func keyboardWillShow(notification: NSNotification) {
@@ -257,9 +254,9 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     func updateTextViewHeight() {
-        let oldHeight = textView.frame.height
+        let oldHeight = toolBar.textView.frame.height
         let maxHeight = UIInterfaceOrientationIsPortrait(interfaceOrientation) ? textViewMaxHeight.portrait : textViewMaxHeight.landscape
-        var newHeight = min(textView.sizeThatFits(CGSize(width: textView.frame.width, height: CGFloat.max)).height, maxHeight)
+        var newHeight = min(toolBar.textView.sizeThatFits(CGSize(width: toolBar.textView.frame.width, height: CGFloat.max)).height, maxHeight)
         #if arch(x86_64) || arch(arm64)
             newHeight = ceil(newHeight)
         #else
@@ -272,13 +269,13 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     func sendAction() {
         // Autocomplete text before sending #hack
-        textView.resignFirstResponder()
-        textView.becomeFirstResponder()
+        toolBar.textView.resignFirstResponder()
+        toolBar.textView.becomeFirstResponder()
 
-        chat.loadedMessages.append([Message(incoming: false, text: textView.text, sentDate: NSDate())])
-        textView.text = nil
+        chat.loadedMessages.append([Message(incoming: false, text: toolBar.textView.text, sentDate: NSDate())])
+        toolBar.textView.text = nil
         updateTextViewHeight()
-        sendButton.enabled = false
+        toolBar.sendButton.enabled = false
 
         let lastSection = tableView.numberOfSections()
         tableView.beginUpdates()
