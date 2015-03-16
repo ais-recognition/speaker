@@ -8,10 +8,15 @@
 
 import UIKit
 
+protocol MessageInputAccessoryViewDelegate {
+    func didEndInput(inputView: MessageInputAccessoryView, message: String)
+    
+}
+
 class MessageInputAccessoryView: UIView, UITextViewDelegate {
-//    var toolBar = UIToolbar(frame: CGRectMake(0, 0, 0, toolBarMinHeight-0.5))
-    var textView = UITextView(frame: CGRectZero)
-    var sendButton = UIButton.buttonWithType(.System) as! UIButton
+    let textView = UITextView(frame: CGRectZero)
+    let sendButton = UIButton.buttonWithType(.System) as! UIButton
+    var delegate: MessageInputAccessoryViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,7 +26,6 @@ class MessageInputAccessoryView: UIView, UITextViewDelegate {
         textView.layer.borderColor = UIColor(red: 200/255, green: 200/255, blue: 205/255, alpha:1).CGColor
         textView.layer.borderWidth = 0.5
         textView.layer.cornerRadius = 5
-//                textView.placeholder = "Message"
         textView.scrollsToTop = false
         textView.textContainerInset = UIEdgeInsetsMake(4, 3, 3, 3)
         self.addSubview(textView)
@@ -32,7 +36,7 @@ class MessageInputAccessoryView: UIView, UITextViewDelegate {
         sendButton.setTitleColor(UIColor(red: 142/255, green: 142/255, blue: 147/255, alpha: 1), forState: .Disabled)
         sendButton.setTitleColor(UIColor(red: 1/255, green: 122/255, blue: 255/255, alpha: 1), forState: .Normal)
         sendButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
-        sendButton.addTarget(self, action: "sendAction", forControlEvents: UIControlEvents.TouchUpInside)
+        sendButton.addTarget(self, action: "didTapSendButton", forControlEvents: UIControlEvents.TouchUpInside)
         self.addSubview(sendButton)
         
         // Auto Layout allows `sendButton` to change width, e.g., for localization.
@@ -50,8 +54,31 @@ class MessageInputAccessoryView: UIView, UITextViewDelegate {
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-//    func textViewDidChange(textView: UITextView) {
+    func textViewDidChange(textView: UITextView) {
 //        updateTextViewHeight()
-//        toolBar.sendButton.enabled = toolBar.textView.hasText()
-//    }
+        sendButton.enabled = textView.hasText()
+    }
+    func didTapSendButton() {
+        // Autocomplete text before sending #hack
+//        textView.resignFirstResponder()
+//        textView.becomeFirstResponder()
+        let message = textView.text
+        textView.text = nil
+//        updateTextViewHeight()
+        sendButton.enabled = false
+        delegate?.didEndInput(self, message: message)
+    }
+    //    func updateTextViewHeight() {
+    //        let oldHeight = toolBar.textView.frame.height
+    //        let maxHeight = UIInterfaceOrientationIsPortrait(interfaceOrientation) ? textViewMaxHeight.portrait : textViewMaxHeight.landscape
+    //        var newHeight = min(toolBar.textView.sizeThatFits(CGSize(width: toolBar.textView.frame.width, height: CGFloat.max)).height, maxHeight)
+    //        #if arch(x86_64) || arch(arm64)
+    //            newHeight = ceil(newHeight)
+    //        #else
+    //            newHeight = CGFloat(ceilf(newHeight.native))
+    //        #endif
+    //        if newHeight != oldHeight {
+    //            toolBar.frame.size.height = newHeight+8*2-0.5
+    //        }
+    //    }
 }
