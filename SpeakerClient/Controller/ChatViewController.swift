@@ -17,18 +17,16 @@ let messageSoundOutgoing: SystemSoundID = createMessageSoundOutgoing()
 class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MessageInputAccessoryViewDelegate {
     let chat: Chat
     var tableView: UITableView!
-    var toolBar: MessageInputAccessoryView!
-    var textView: UITextView!
-    var sendButton: UIButton!
+    var inputAccessory: MessageInputAccessoryView!
     var rotating = false
     let mqtt = MQTTClient(clientId: "ios")
 
     override var inputAccessoryView: UIView! {
-        if toolBar == nil {
-            toolBar = MessageInputAccessoryView(frame: CGRectMake(0, 0, 0, toolBarMinHeight-0.5))
-            toolBar.messageDelegate = self
+        if inputAccessory == nil {
+            inputAccessory = MessageInputAccessoryView(frame: CGRectMake(0, 0, 0, toolBarMinHeight-0.5))
+            inputAccessory.messageDelegate = self
         }
-        return toolBar
+        return inputAccessory
     }
 
     init(chat: Chat) {
@@ -95,7 +93,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     override func viewWillDisappear(animated: Bool)  {
         super.viewWillDisappear(animated)
-        chat.draft = toolBar.textView.text
+        chat.draft = inputAccessory.textView.text
 //        chat.draft = textView.text
     }
 
@@ -216,7 +214,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func didEndInput(inputView: MessageInputAccessoryView, message: String) {
         mqtt.publishString(message, toTopic: "ais/recognize/setname", withQos: MQTTQualityOfService(0), retain: true, completionHandler: nil)
         chat.loadedMessages.append([Message(incoming: false, text: message, sentDate: NSDate())])
-        toolBar.textView.text = nil
+        inputAccessory.textView.text = nil
 //        updateTextViewHeight()
 
         let lastSection = tableView.numberOfSections()

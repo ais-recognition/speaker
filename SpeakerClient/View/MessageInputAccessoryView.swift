@@ -14,13 +14,15 @@ protocol MessageInputAccessoryViewDelegate {
 }
 
 class MessageInputAccessoryView: UIToolbar, UITextViewDelegate {
+    let BUTTON_NORMAL_COLOR = UIColor(red: 1/255, green: 122/255, blue: 255/255, alpha: 1)
+    let BUTTON_DISABLE_COLOR = UIColor(red: 142/255, green: 142/255, blue: 147/255, alpha: 1)
     let textView = UITextView(frame: CGRectZero)
     let sendButton = UIButton.buttonWithType(.System) as! UIButton
+    let voiceButton = UIButton.buttonWithType(.System) as! UIButton
     var messageDelegate: MessageInputAccessoryViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-//        self.backgroundColor = UIColor(white: <#CGFloat#>, alpha: <#CGFloat#>)
         textView.backgroundColor = UIColor(white: 250/255, alpha: 1)
         textView.delegate = self
         textView.font = UIFont.systemFontOfSize(messageFontSize)
@@ -34,21 +36,31 @@ class MessageInputAccessoryView: UIToolbar, UITextViewDelegate {
         sendButton.enabled = false
         sendButton.titleLabel?.font = UIFont.boldSystemFontOfSize(17)
         sendButton.setTitle("Send", forState: .Normal)
-        sendButton.setTitleColor(UIColor(red: 142/255, green: 142/255, blue: 147/255, alpha: 1), forState: .Disabled)
-        sendButton.setTitleColor(UIColor(red: 1/255, green: 122/255, blue: 255/255, alpha: 1), forState: .Normal)
+        sendButton.setTitleColor(BUTTON_DISABLE_COLOR, forState: .Disabled)
+        sendButton.setTitleColor(BUTTON_NORMAL_COLOR, forState: .Normal)
         sendButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
         sendButton.addTarget(self, action: "didTapSendButton", forControlEvents: UIControlEvents.TouchUpInside)
         self.addSubview(sendButton)
         
+        voiceButton.setTitle("Voice", forState: .Normal)
+        voiceButton.setTitleColor(BUTTON_NORMAL_COLOR, forState: .Normal)
+        voiceButton.setTitleColor(BUTTON_DISABLE_COLOR, forState: .Disabled)
+        voiceButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
+        voiceButton.addTarget(self, action: "didTouchVoiceButton", forControlEvents: UIControlEvents.TouchDown)
+        self.addSubview(voiceButton)
+        
         // Auto Layout allows `sendButton` to change width, e.g., for localization.
         textView.setTranslatesAutoresizingMaskIntoConstraints(false)
         sendButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        self.addConstraint(NSLayoutConstraint(item: textView, attribute: .Left, relatedBy: .Equal, toItem: self, attribute: .Left, multiplier: 1, constant: 8))
+        voiceButton.setTranslatesAutoresizingMaskIntoConstraints(false)// why?
+        self.addConstraint(NSLayoutConstraint(item: textView, attribute: .Left, relatedBy: .Equal, toItem: voiceButton, attribute: .Right, multiplier: 1, constant: -2))
         self.addConstraint(NSLayoutConstraint(item: textView, attribute: .Top, relatedBy: .Equal, toItem: self, attribute: .Top, multiplier: 1, constant: 7.5))
         self.addConstraint(NSLayoutConstraint(item: textView, attribute: .Right, relatedBy: .Equal, toItem: sendButton, attribute: .Left, multiplier: 1, constant: -2))
         self.addConstraint(NSLayoutConstraint(item: textView, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1, constant: -8))
         self.addConstraint(NSLayoutConstraint(item: sendButton, attribute: .Right, relatedBy: .Equal, toItem: self, attribute: .Right, multiplier: 1, constant: 0))
         self.addConstraint(NSLayoutConstraint(item: sendButton, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1, constant: -4.5))
+        self.addConstraint(NSLayoutConstraint(item: voiceButton, attribute: .Left, relatedBy: .Equal, toItem: self, attribute: .Left, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: voiceButton, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1, constant: -4.5))
 
     }
     
