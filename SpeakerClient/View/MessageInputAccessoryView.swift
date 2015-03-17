@@ -13,13 +13,14 @@ protocol MessageInputAccessoryViewDelegate {
     
 }
 
-class MessageInputAccessoryView: UIView, UITextViewDelegate {
+class MessageInputAccessoryView: UIToolbar, UITextViewDelegate {
     let textView = UITextView(frame: CGRectZero)
     let sendButton = UIButton.buttonWithType(.System) as! UIButton
-    var delegate: MessageInputAccessoryViewDelegate?
+    var messageDelegate: MessageInputAccessoryViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+//        self.backgroundColor = UIColor(white: <#CGFloat#>, alpha: <#CGFloat#>)
         textView.backgroundColor = UIColor(white: 250/255, alpha: 1)
         textView.delegate = self
         textView.font = UIFont.systemFontOfSize(messageFontSize)
@@ -66,7 +67,7 @@ class MessageInputAccessoryView: UIView, UITextViewDelegate {
         textView.text = nil
 //        updateTextViewHeight()
         sendButton.enabled = false
-        delegate?.didEndInput(self, message: message)
+        messageDelegate?.didEndInput(self, message: message)
     }
     //    func updateTextViewHeight() {
     //        let oldHeight = toolBar.textView.frame.height

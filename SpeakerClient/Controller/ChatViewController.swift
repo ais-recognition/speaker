@@ -26,7 +26,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override var inputAccessoryView: UIView! {
         if toolBar == nil {
             toolBar = MessageInputAccessoryView(frame: CGRectMake(0, 0, 0, toolBarMinHeight-0.5))
-            toolBar.delegate = self
+            toolBar.messageDelegate = self
         }
         return toolBar
     }
@@ -38,7 +38,6 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     required init(coder aDecoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
         self.chat =  Chat(user: User(ID: 2, username: "samihah", firstName: "Angel", lastName: "Rao"), lastMessageText: "6 sounds good :-)", lastMessageSentDate: NSDate())
 //        super.init(nibName: nil, bundle: nil)
         super.init(coder: aDecoder)
@@ -61,7 +60,6 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         chat.loadedMessages = []
 
         let whiteColor = UIColor.whiteColor()
