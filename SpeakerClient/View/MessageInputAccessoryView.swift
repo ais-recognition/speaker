@@ -67,10 +67,20 @@ class MessageInputAccessoryView: UIToolbar, UITextViewDelegate {
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+    
     func textViewDidChange(textView: UITextView) {
 //        updateTextViewHeight()
         sendButton.enabled = textView.hasText()
     }
+    
+    func didTouchVoiceButton() {
+        // start recording
+    }
+    
+    func didReleaseVoiceButton() {
+        // end recording
+    }
+    
     func didTapSendButton() {
         // Autocomplete text before sending #hack
 //        textView.resignFirstResponder()
