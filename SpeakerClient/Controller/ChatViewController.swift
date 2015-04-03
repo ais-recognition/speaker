@@ -6,20 +6,23 @@
 //  Copyright (c) 2015 to0. All rights reserved.
 //
 
-import AudioToolbox
 import UIKit
+import AudioToolbox
+import AVFoundation
 
 let messageFontSize: CGFloat = 17
 let toolBarMinHeight: CGFloat = 44
 let textViewMaxHeight: (portrait: CGFloat, landscape: CGFloat) = (portrait: 272, landscape: 90)
 let messageSoundOutgoing: SystemSoundID = createMessageSoundOutgoing()
 
-class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MessageInputAccessoryViewDelegate {
-    let chat: Chat
+class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, AVAudioRecorderDelegate, MessageInputAccessoryViewDelegate {
+    let chat: Chat = Chat(user: User(ID: 2, username: "samihah", firstName: "Angel", lastName: "Rao"), lastMessageText: "6 sounds good :-)", lastMessageSentDate: NSDate())
+//    var audioRecorder: AVAudioRecorder
     var tableView: UITableView!
     var inputAccessory: MessageInputAccessoryView!
     var rotating = false
     let mqtt = MQTTClient(clientId: "ios")
+    var remoteAudioPath: String?
 
     override var inputAccessoryView: UIView! {
         if inputAccessory == nil {
@@ -29,25 +32,55 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         return inputAccessory
     }
 
-    init(chat: Chat) {
-        self.chat = chat
-        super.init(nibName: nil, bundle: nil)
-        title = chat.user.name
-    }
+//    init(chat: Chat) {
+//        self.chat = chat
+//        super.init(nibName: nil, bundle: nil)
+//        title = chat.user.name
+//    }
 
     required init(coder aDecoder: NSCoder) {
-        self.chat =  Chat(user: User(ID: 2, username: "samihah", firstName: "Angel", lastName: "Rao"), lastMessageText: "6 sounds good :-)", lastMessageSentDate: NSDate())
-//        super.init(nibName: nil, bundle: nil)
         super.init(coder: aDecoder)
         title = chat.user.name
-        mqtt.messageHandler = {(message: MQTTMessage!) -> Void in
-            println(message.payloadString())
+        mqtt.messageHandler = {[weak self] (message: MQTTMessage!) -> Void in
+            
+            let topic = message.topic
+            let type = topic.componentsSeparatedByString("/")[2]
+            var speaker: String
+            if type == "result" {
+                speaker = "\(message.payloadString()) is speaking"
+            }
+            else if type == "unknown" {
+                speaker = "We don't have your voice record?"
+                self?.remoteAudioPath = message.payloadString()
+            }
+            else {
+                return
+            }
+            println(speaker)
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                self?.chat.loadedMessages.append([Message(incoming: true, text: speaker, sentDate: NSDate())])
+                self?.inputAccessory.textView.text = nil
+                //        updateTextViewHeight()
+                
+                let lastSection = tableView.numberOfSections()
+                self?.tableView.beginUpdates()
+                self?.tableView.insertSections(NSIndexSet(index: lastSection), withRowAnimation: UITableViewRowAnimation.Right)
+                self?.tableView.insertRowsAtIndexPaths([
+                    NSIndexPath(forRow: 0, inSection: lastSection),
+                    NSIndexPath(forRow: 1, inSection: lastSection)
+                    ], withRowAnimation: UITableViewRowAnimation.Right)
+                self?.tableView.endUpdates()
+                self?.tableViewScrollToBottomAnimated(true)
+                AudioServicesPlaySystemSound(messageSoundOutgoing)
+            })
         }
         
-        mqtt.connectToHost("127.0.0.1", completionHandler: {(code: MQTTConnectionReturnCode) -> Void in
+        mqtt.connectToHost("iot.eclipse.org", completionHandler: {[weak self](code: MQTTConnectionReturnCode) -> Void in
             println(code)
             if code.value  == 0 {
-                self.mqtt.subscribe("aaaa", withCompletionHandler: nil)
+                self?.mqtt.subscribe("ais/recognize/result/+", withCompletionHandler: nil)
+                self?.mqtt.subscribe("ais/recognize/unknown/+", withCompletionHandler: nil)
             }
         })
     }
@@ -210,9 +243,29 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
             tableView.contentOffset.y = contentOffsetY
         }
     }
+    func didEndRecording(voiceData: NSData) {
+        mqtt.publishData(voiceData, toTopic: "ais/recognize/voice/test_id", withQos: MQTTQualityOfService(0), retain: true, completionHandler: nil)
+        chat.loadedMessages.append([Message(incoming: false, text: "Voice sent", sentDate: NSDate())])
+        inputAccessory.textView.text = nil
+        //        updateTextViewHeight()
+        
+        let lastSection = tableView.numberOfSections()
+        tableView.beginUpdates()
+        tableView.insertSections(NSIndexSet(index: lastSection), withRowAnimation: UITableViewRowAnimation.Right)
+        tableView.insertRowsAtIndexPaths([
+            NSIndexPath(forRow: 0, inSection: lastSection),
+            NSIndexPath(forRow: 1, inSection: lastSection)
+            ], withRowAnimation: UITableViewRowAnimation.Right)
+        tableView.endUpdates()
+        tableViewScrollToBottomAnimated(true)
+        AudioServicesPlaySystemSound(messageSoundOutgoing)
+    }
     
     func didEndInput(inputView: MessageInputAccessoryView, message: String) {
-        mqtt.publishString(message, toTopic: "ais/recognize/setname", withQos: MQTTQualityOfService(0), retain: true, completionHandler: nil)
+        if remoteAudioPath == nil {
+            return
+        }
+        mqtt.publishString("\(remoteAudioPath!)=\(message)", toTopic: "ais/recognize/setname/test_id", withQos: MQTTQualityOfService(0), retain: true, completionHandler: nil)
         chat.loadedMessages.append([Message(incoming: false, text: message, sentDate: NSDate())])
         inputAccessory.textView.text = nil
 //        updateTextViewHeight()

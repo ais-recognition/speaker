@@ -7,22 +7,43 @@
 //
 
 import UIKit
+import AVFoundation
 
 protocol MessageInputAccessoryViewDelegate {
     func didEndInput(inputView: MessageInputAccessoryView, message: String)
-    
+    func didEndRecording(voiceData: NSData)
 }
 
-class MessageInputAccessoryView: UIToolbar, UITextViewDelegate {
+class MessageInputAccessoryView: UIToolbar, UITextViewDelegate, AVAudioRecorderDelegate {
     let BUTTON_NORMAL_COLOR = UIColor(red: 1/255, green: 122/255, blue: 255/255, alpha: 1)
     let BUTTON_DISABLE_COLOR = UIColor(red: 142/255, green: 142/255, blue: 147/255, alpha: 1)
     let textView = UITextView(frame: CGRectZero)
     let sendButton = UIButton.buttonWithType(.System) as! UIButton
     let voiceButton = UIButton.buttonWithType(.System) as! UIButton
     var messageDelegate: MessageInputAccessoryViewDelegate?
+    var audioRecorder: AVAudioRecorder?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        let fileManager = NSFileManager()
+        
+        let documentsFolderUrl = fileManager.URLForDirectory(.DocumentDirectory,
+            inDomain: .UserDomainMask,
+            appropriateForURL: nil,
+            create: false,
+            error: nil)
+        
+        let voiceUrl = documentsFolderUrl!.URLByAppendingPathComponent("Recording.m4a")
+        let voiceSetting = [AVFormatIDKey: kAudioFormatMPEG4AAC as NSNumber,
+            AVSampleRateKey: 8000.0 as NSNumber,
+            AVNumberOfChannelsKey : 1 as NSNumber,
+            AVEncoderAudioQualityKey : AVAudioQuality.Low.rawValue as NSNumber]
+        
+        audioRecorder = AVAudioRecorder(URL: voiceUrl, settings: voiceSetting, error: nil)
+        audioRecorder!.delegate = self
+        audioRecorder!.prepareToRecord()
+        AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: AVAudioSessionCategoryOptions.DuckOthers, error: nil)
+        
         textView.backgroundColor = UIColor(white: 250/255, alpha: 1)
         textView.delegate = self
         textView.font = UIFont.systemFontOfSize(messageFontSize)
@@ -45,9 +66,10 @@ class MessageInputAccessoryView: UIToolbar, UITextViewDelegate {
         voiceButton.setTitle("Voice", forState: .Normal)
         voiceButton.setTitleColor(BUTTON_NORMAL_COLOR, forState: .Normal)
         voiceButton.setTitleColor(BUTTON_DISABLE_COLOR, forState: .Disabled)
-        voiceButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
+        voiceButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 20, bottom: 6, right: 20)
         voiceButton.addTarget(self, action: "didTouchVoiceButton", forControlEvents: UIControlEvents.TouchDown)
         self.addSubview(voiceButton)
+        voiceButton.addTarget(self, action: "didReleaseVoiceButton", forControlEvents: UIControlEvents.TouchUpInside)
         
         // Auto Layout allows `sendButton` to change width, e.g., for localization.
         textView.setTranslatesAutoresizingMaskIntoConstraints(false)
@@ -69,6 +91,16 @@ class MessageInputAccessoryView: UIToolbar, UITextViewDelegate {
         fatalError("init(coder:) has not been implemented")
 
     }
+    func audioRecorderDidFinishRecording(recorder: AVAudioRecorder!, successfully flag: Bool) {
+        println(flag)
+        var error: NSError?
+        let player = AVAudioPlayer(contentsOfURL: recorder.url, error: &error)
+        println(error)
+        player.play()
+        let data = NSData(contentsOfURL: audioRecorder!.url)
+        println(data)
+        messageDelegate?.didEndRecording(data!)
+    }
     
     func textViewDidChange(textView: UITextView) {
 //        updateTextViewHeight()
@@ -77,10 +109,15 @@ class MessageInputAccessoryView: UIToolbar, UITextViewDelegate {
     
     func didTouchVoiceButton() {
         // start recording
+        let session = AVAudioSession.sharedInstance()
+        session.setActive(true, error: nil)
+        audioRecorder?.record()
     }
     
     func didReleaseVoiceButton() {
         // end recording
+        audioRecorder?.stop()
+        AVAudioSession.sharedInstance().setActive(false, error: nil)
     }
     
     func didTapSendButton() {
