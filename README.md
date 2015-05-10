@@ -7,8 +7,8 @@ Tasks
 -----
 
 -	[x] fix chat view auto scroll(pull request to original repo)
--	[ ] add recording function into chat view
--	[ ] publish message with audio payload
+-	[x] add recording function into chat view
+-	[x] publish message with audio payload
 
 References
 ----------

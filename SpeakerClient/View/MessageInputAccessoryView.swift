@@ -56,7 +56,7 @@ class MessageInputAccessoryView: UIToolbar, UITextViewDelegate, AVAudioRecorderD
         
         sendButton.enabled = false
         sendButton.titleLabel?.font = UIFont.boldSystemFontOfSize(17)
-        sendButton.setTitle("Send", forState: .Normal)
+        sendButton.setTitle("Set Name", forState: .Normal)
         sendButton.setTitleColor(BUTTON_DISABLE_COLOR, forState: .Disabled)
         sendButton.setTitleColor(BUTTON_NORMAL_COLOR, forState: .Normal)
         sendButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
@@ -64,6 +64,7 @@ class MessageInputAccessoryView: UIToolbar, UITextViewDelegate, AVAudioRecorderD
         self.addSubview(sendButton)
         
         voiceButton.setTitle("Voice", forState: .Normal)
+        voiceButton.titleLabel?.font = UIFont.boldSystemFontOfSize(17)
         voiceButton.setTitleColor(BUTTON_NORMAL_COLOR, forState: .Normal)
         voiceButton.setTitleColor(BUTTON_DISABLE_COLOR, forState: .Disabled)
         voiceButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 20, bottom: 6, right: 20)

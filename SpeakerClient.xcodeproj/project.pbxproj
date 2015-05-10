@@ -96,6 +96,7 @@
 		BA439D611AB2D28000ADF45B /* MQTTKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTKit.h; sourceTree = "<group>"; };
 		BA439D621AB2D28000ADF45B /* MQTTKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTTKit.m; sourceTree = "<group>"; };
 		BA439D731AB3AC2300ADF45B /* MessageInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageInputAccessoryView.swift; sourceTree = "<group>"; };
+		BA4AF84B1AFFF32E008266F3 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BAAE59971A9EE66300CAE080 /* SpeakerClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpeakerClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAAE599B1A9EE66300CAE080 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BAAE599C1A9EE66300CAE080 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -222,6 +223,7 @@
 		BAAE598E1A9EE66300CAE080 = {
 			isa = PBXGroup;
 			children = (
+				BA4AF84B1AFFF32E008266F3 /* README.md */,
 				BA0CC8531AA6E008000910E2 /* SwiftMQTT */,
 				BAAE59991A9EE66300CAE080 /* SpeakerClient */,
 				BAAE59B11A9EE66300CAE080 /* SpeakerClientTests */,

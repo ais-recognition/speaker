@@ -41,37 +41,36 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         title = chat.user.name
-        mqtt.messageHandler = {[weak self] (message: MQTTMessage!) -> Void in
+        mqtt.messageHandler = {[unowned self] (message: MQTTMessage!) -> Void in
             
             let topic = message.topic
-            let type = topic.componentsSeparatedByString("/")[2]
+//            let type = topic.componentsSeparatedByString("/")[2]
             var speaker: String
-            if type == "result" {
-                speaker = "\(message.payloadString()) is speaking"
-            }
-            else if type == "unknown" {
+            self.remoteAudioPath = topic.componentsSeparatedByString("/")[4]
+
+            if message.payloadString() == "unknown" {
                 speaker = "We don't have your voice record?"
-                self?.remoteAudioPath = message.payloadString()
             }
             else {
-                return
+                speaker = "\(message.payloadString()) is speaking"
             }
+           
             println(speaker)
             
             dispatch_async(dispatch_get_main_queue(), {
-                self?.chat.loadedMessages.append([Message(incoming: true, text: speaker, sentDate: NSDate())])
-                self?.inputAccessory.textView.text = nil
+                self.chat.loadedMessages.append([Message(incoming: true, text: speaker, sentDate: NSDate())])
+                self.inputAccessory.textView.text = nil
                 //        updateTextViewHeight()
                 
-                let lastSection = tableView.numberOfSections()
-                self?.tableView.beginUpdates()
-                self?.tableView.insertSections(NSIndexSet(index: lastSection), withRowAnimation: UITableViewRowAnimation.Right)
-                self?.tableView.insertRowsAtIndexPaths([
+                let lastSection = self.tableView.numberOfSections()
+                self.tableView.beginUpdates()
+                self.tableView.insertSections(NSIndexSet(index: lastSection), withRowAnimation: UITableViewRowAnimation.Right)
+                self.tableView.insertRowsAtIndexPaths([
                     NSIndexPath(forRow: 0, inSection: lastSection),
                     NSIndexPath(forRow: 1, inSection: lastSection)
                     ], withRowAnimation: UITableViewRowAnimation.Right)
-                self?.tableView.endUpdates()
-                self?.tableViewScrollToBottomAnimated(true)
+                self.tableView.endUpdates()
+                self.tableViewScrollToBottomAnimated(true)
                 AudioServicesPlaySystemSound(messageSoundOutgoing)
             })
         }
@@ -79,8 +78,8 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         mqtt.connectToHost("iot.eclipse.org", completionHandler: {[weak self](code: MQTTConnectionReturnCode) -> Void in
             println(code)
             if code.value  == 0 {
-                self?.mqtt.subscribe("ais/recognize/result/+", withCompletionHandler: nil)
-                self?.mqtt.subscribe("ais/recognize/unknown/+", withCompletionHandler: nil)
+                self?.mqtt.subscribe("ais/recognize/result/+/+", withCompletionHandler: nil)
+//                self?.mqtt.subscribe("ais/recognize/unknown/+", withCompletionHandler: nil)
             }
         })
     }
@@ -244,7 +243,7 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     func didEndRecording(voiceData: NSData) {
-        mqtt.publishData(voiceData, toTopic: "ais/recognize/voice/test_id", withQos: MQTTQualityOfService(0), retain: true, completionHandler: nil)
+        mqtt.publishData(voiceData, toTopic: "ais/recognize/voice/ios_id", withQos: MQTTQualityOfService(0), retain: false, completionHandler: nil)
         chat.loadedMessages.append([Message(incoming: false, text: "Voice sent", sentDate: NSDate())])
         inputAccessory.textView.text = nil
         //        updateTextViewHeight()
@@ -265,8 +264,8 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if remoteAudioPath == nil {
             return
         }
-        mqtt.publishString("\(remoteAudioPath!)=\(message)", toTopic: "ais/recognize/setname/test_id", withQos: MQTTQualityOfService(0), retain: true, completionHandler: nil)
-        chat.loadedMessages.append([Message(incoming: false, text: message, sentDate: NSDate())])
+        mqtt.publishString("\(remoteAudioPath!)=\(message)", toTopic: "ais/recognize/setname/ios_id", withQos: MQTTQualityOfService(0), retain: false, completionHandler: nil)
+        chat.loadedMessages.append([Message(incoming: false, text: "It's \(message)", sentDate: NSDate())])
         inputAccessory.textView.text = nil
 //        updateTextViewHeight()
 
